@@ -437,12 +437,12 @@ output.close()
 
 from converter.video_converter import VideoConverter
 
-global model, vggface
-global train_batchA, train_batchB
-del model
-del vggface
-del train_batchA
-del train_batchB
+# global model, vggface
+# global train_batchA, train_batchB
+# del model
+# del vggface
+# del train_batchA
+# del train_batchB
 tf.reset_default_graph()
 K.clear_session()
 model = FaceswapGANModel(**arch_config)
