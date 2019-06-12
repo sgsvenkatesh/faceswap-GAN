@@ -26,7 +26,7 @@ print(platform.python_version())
 # global TOTAL_ITERS
 TOTAL_ITERS = 25000
 
-imageio.plugins.ffmpeg.download()
+# imageio.plugins.ffmpeg.download()
 
 fd = MTCNNFaceDetector(sess=K.get_session(), model_path="./mtcnn_weights/")
 
