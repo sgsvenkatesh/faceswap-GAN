@@ -23,7 +23,7 @@ fn_target_video = "videos/target.mp4"
 
 print(platform.python_version())
 
-global TOTAL_ITERS
+# global TOTAL_ITERS
 TOTAL_ITERS = 25000
 
 # imageio.plugins.ffmpeg.download()
@@ -115,6 +115,8 @@ from networks.faceswap_gan_model import FaceswapGANModel
 from data_loader.data_loader import DataLoader
 from utils import showG, showG_mask, showG_eyes
 
+model, vggface = None, None
+train_batchA, train_batchB = None, None
 model = FaceswapGANModel(**arch_config)
 
 os.system("wget https://github.com/rcmalli/keras-vggface/releases/download/v2.0/rcmalli_vggface_tf_notop_resnet50.h5")
@@ -158,14 +160,8 @@ def show_loss_config(loss_config):
     for config, value in loss_config.items():
         print(f"{config} = {value}")
 
-def reset_session(save_path):
-    global model, vggface
-    global train_batchA, train_batchB
+def reset_session(save_path, model, vggface, train_batchA, train_batchB):
     model.save_weights(path=save_path)
-    del model
-    del vggface
-    del train_batchA
-    del train_batchB
     K.clear_session()
     model = FaceswapGANModel(**arch_config)
     model.load_weights(path=save_path)
@@ -199,9 +195,8 @@ for k in ['ttl', 'adv', 'recon', 'edge', 'pl']:
     errGBs[k] = 0
 
 display_iters = 2
-# global TOTAL_ITERS
 
-global train_batchA, train_batchB
+# global train_batchA, train_batchB
 train_batchA = DataLoader(train_A, train_AnB, batchSize, img_dirA_bm_eyes,
                           RESOLUTION, num_cpus, K.get_session(), **da_config)
 train_batchB = DataLoader(train_B, train_AnB, batchSize, img_dirB_bm_eyes,
@@ -226,7 +221,7 @@ while gen_iterations <= TOTAL_ITERS:
         loss_config['use_PL'] = True
         loss_config['use_mask_hinge_loss'] = False
         loss_config['m_mask'] = 0.0
-        reset_session(models_dir)
+        reset_session(models_dir, model, vggface, train_batchA, train_batchB)
         print("Building new loss funcitons...")
         show_loss_config(loss_config)
         model.build_train_functions(loss_weights=loss_weights, **loss_config)
@@ -236,7 +231,7 @@ while gen_iterations <= TOTAL_ITERS:
         loss_config['use_PL'] = True
         loss_config['use_mask_hinge_loss'] = True
         loss_config['m_mask'] = 0.5
-        reset_session(models_dir)
+        reset_session(models_dir, model, vggface, train_batchA, train_batchB)
         print("Building new loss funcitons...")
         show_loss_config(loss_config)
         model.build_train_functions(loss_weights=loss_weights, **loss_config)
@@ -246,7 +241,7 @@ while gen_iterations <= TOTAL_ITERS:
         loss_config['use_PL'] = True
         loss_config['use_mask_hinge_loss'] = True
         loss_config['m_mask'] = 0.2
-        reset_session(models_dir)
+        reset_session(models_dir, model, vggface, train_batchA, train_batchB)
         print("Building new loss funcitons...")
         show_loss_config(loss_config)
         model.build_train_functions(loss_weights=loss_weights, **loss_config)
@@ -257,7 +252,7 @@ while gen_iterations <= TOTAL_ITERS:
         loss_config['use_mask_hinge_loss'] = True
         loss_config['m_mask'] = 0.4
         loss_config['lr_factor'] = 0.3
-        reset_session(models_dir)
+        reset_session(models_dir, model, vggface, train_batchA, train_batchB)
         print("Building new loss funcitons...")
         show_loss_config(loss_config)
         model.build_train_functions(loss_weights=loss_weights, **loss_config)
@@ -270,7 +265,7 @@ while gen_iterations <= TOTAL_ITERS:
         loss_config['use_mask_hinge_loss'] = True
         loss_config['m_mask'] = 0.5
         loss_config['lr_factor'] = 1
-        reset_session(models_dir)
+        reset_session(models_dir, model, vggface, train_batchA, train_batchB)
         print("Building new loss funcitons...")
         show_loss_config(loss_config)
         model.build_train_functions(loss_weights=loss_weights, **loss_config)
@@ -281,7 +276,7 @@ while gen_iterations <= TOTAL_ITERS:
         loss_config['use_mask_hinge_loss'] = True
         loss_config['m_mask'] = 0.1
         loss_config['lr_factor'] = 0.3
-        reset_session(models_dir)
+        reset_session(models_dir, model, vggface, train_batchA, train_batchB)
         print("Building new loss funcitons...")
         show_loss_config(loss_config)
         model.build_train_functions(loss_weights=loss_weights, **loss_config)
@@ -292,7 +287,7 @@ while gen_iterations <= TOTAL_ITERS:
         loss_config['use_mask_hinge_loss'] = False
         loss_config['m_mask'] = 0.0
         loss_config['lr_factor'] = 0.1
-        reset_session(models_dir)
+        reset_session(models_dir, model, vggface, train_batchA, train_batchB)
         print("Building new loss funcitons...")
         show_loss_config(loss_config)
         model.build_train_functions(loss_weights=loss_weights, **loss_config)
@@ -437,8 +432,8 @@ output.close()
 
 from converter.video_converter import VideoConverter
 
-# global model, vggface
-# global train_batchA, train_batchB
+model, vggface = None, None
+train_batchA, train_batchB = None, None
 # del model
 # del vggface
 # del train_batchA
