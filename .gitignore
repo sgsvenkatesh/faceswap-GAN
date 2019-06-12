@@ -1,0 +1,11 @@
+faceA
+faceA/*
+faceB
+faceB/*
+
+test-1.py
+.idea
+.idea/*
+
+__pychache__
+*/__pychache__/*
