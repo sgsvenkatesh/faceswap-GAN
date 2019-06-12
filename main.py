@@ -199,7 +199,7 @@ for k in ['ttl', 'adv', 'recon', 'edge', 'pl']:
     errGBs[k] = 0
 
 display_iters = 2
-global TOTAL_ITERS
+# global TOTAL_ITERS
 
 global train_batchA, train_batchB
 train_batchA = DataLoader(train_A, train_AnB, batchSize, img_dirA_bm_eyes,
