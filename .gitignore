@@ -7,5 +7,6 @@ test-1.py
 .idea
 .idea/*
 
-__pychache__
-*/__pychache__/*
+ __pycache__/
+converter/__pycache__/
+detector/__pycache__/

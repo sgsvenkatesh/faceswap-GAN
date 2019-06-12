@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-pip show numpy
-pip install numpy==1.16.1
-pip show numpy
+pip3 show numpy
+pip3 install numpy==1.16.1
+pip3 show numpy
 
-pip install moviepy
-pip install keras_vggface
+pip3 install moviepy
+pip3 install keras_vggface
 
-pip install imageio-ffmpeg
+pip3 install imageio-ffmpeg
